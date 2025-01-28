@@ -141,6 +141,12 @@ jobs:
         EXCLUDE: ".git"
         SCRIPT_BEFORE: mkdir -p /var/www
         SCRIPT_AFTER: /var/www/setup-dc.sh > /var/log/setup-dc.log 2>&1
+        
+    - name: Configure Docker containers to restart automatically
+      run: |
+        echo "Setting all Docker containers to restart automatically..."
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ env.ip }} "docker update --restart=always \$(docker ps -aq)"
+        
 
     - name: Open your Mautic instance
       run: |
