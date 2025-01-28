@@ -128,12 +128,6 @@ jobs:
       env:
         EMAIL_ADDRESS: ${{ vars.EMAIL_ADDRESS }}
         DOMAIN: ${{ vars.DOMAIN }}
-        
-    - name: Set up SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
 
     - name: Deploy to Server
       uses: easingthemes/ssh-deploy@main
@@ -147,13 +141,6 @@ jobs:
         EXCLUDE: ".git"
         SCRIPT_BEFORE: mkdir -p /var/www
         SCRIPT_AFTER: /var/www/setup-dc.sh > /var/log/setup-dc.log 2>&1
-
-    - name: Configure Docker containers to restart automatically
-      run: |
-        echo "Setting all Docker containers to restart automatically..."
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa root@${{ env.ip }} "docker update --restart=always \$(docker ps -aq)"
-
-        
 
     - name: Open your Mautic instance
       run: |
